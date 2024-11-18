@@ -1,0 +1,84 @@
+//symbol table
+#include<stdio.h>
+#include<string.h>
+
+struct symtab {
+    int lineno;
+    char var[25], dt[25], val[10];
+} sa[20];
+
+void main() {
+    int i = 0, max = 0, line = 0;
+    char s[25], typ[25], gar[] = "garbage";
+    FILE *fn;
+
+    fn = fopen("input.txt", "r");
+    if (fn == NULL) {
+        printf("Error: Unable to open input file.\n");
+        return;
+    }
+
+    printf("\n\nSYMBOL TABLE MANAGEMENT\n\n");
+    printf("Variable\tDatatype\tLine.no.\tValue\n");
+
+    while (!(feof(fn))) {
+        fscanf(fn, "%s", s);
+
+        if ((strcmp(s, "int") == 0) || (strcmp(s, "float") == 0)) {
+            strcpy(typ, s);
+            line++;
+            while (1) {
+                i++;
+                max = i;
+                sa[i].lineno = line;
+                fscanf(fn, "%s", s);
+                strcpy(sa[i].var, s);
+                strcpy(sa[i].dt, typ);
+
+                fscanf(fn, "%s", s);
+                if (strcmp(s, "=") == 0) {
+                    fscanf(fn, "%s", s);
+                    strcpy(sa[i].val, s);
+                    fscanf(fn, "%s", s);
+                } else {
+                    strcpy(sa[i].val, gar);
+                }
+
+                if (strcmp(s, ",") == 0)
+                    continue;
+                else
+                    break;
+            }
+        } else if (strcmp(s, "char") == 0) {
+            strcpy(typ, s);
+            line++;
+            while (strcmp(s, ";") != 0) {
+                i++;
+                max = i;
+                sa[i].lineno = line;
+                fscanf(fn, "%s", s);
+                strcpy(sa[i].var, s);
+                strcpy(sa[i].dt, typ);
+
+                fscanf(fn, "%s", s);
+                if (strcmp(s, "=") == 0) {
+                    fscanf(fn, "%s", s);
+                    fscanf(fn, "%s", s);
+                    strcpy(sa[i].val, s);
+                    fscanf(fn, "%s", s);
+                    fscanf(fn, "%s", s);
+                }
+            }
+            fscanf(fn, "%s", s);
+            if (strcmp(s, ",") == 0)
+                continue;
+        }
+    }
+
+    for (i = 1; i <= max; i++) {
+        printf("%s\t\t%s\t\t%d\t\t%s\n", sa[i].var, sa[i].dt, sa[i].lineno, sa[i].val);
+    }
+
+    fclose(fn);
+}
+=======================================================================================================================================
